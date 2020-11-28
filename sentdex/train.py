@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!python3
 import matplotlib.pyplot as plt
 import os
 import numpy as np

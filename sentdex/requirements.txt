@@ -1,3 +1,4 @@
+wheel
 matplotlib
 numpy
 scipy
