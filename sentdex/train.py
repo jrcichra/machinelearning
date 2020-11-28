@@ -163,5 +163,5 @@ def fwd_pass(X, y, train=False):
 def test(size=32):
     X, y = test_X[:size], test_y[:size]
     val_acc, val_loss = fwd_pass(
-        X.view(-1, 1, DIMS, DIMS, y)).to(device), y.to(device)
+        X.view(-1, 1, DIMS, DIMS).to(device), y.to(device))
     return val_acc, val_loss
