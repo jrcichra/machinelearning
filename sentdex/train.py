@@ -51,6 +51,14 @@ class Net(nn.Module):
         return F.softmax(x, dim=1)
 
 
+if torch.cuda.is_available():
+    # you can continue going on here, like cuda:1 cuda:2....etc.
+    device = torch.device("cuda:0")
+    print("Running on the GPU")
+else:
+    device = torch.device("cpu")
+    print("Running on the CPU")
+
 X = torch.Tensor([i[0] for i in training_data]).view(-1, DIMS, DIMS)
 X = X/255.0
 y = torch.Tensor([i[1] for i in training_data])
@@ -71,7 +79,7 @@ train_y = y[:-val_size]
 test_X = X[-val_size:]
 test_y = y[-val_size:]
 
-net = Net()
+net = Net().to(device)
 print(net)
 
 optimizer = optim.Adam(net.parameters(), lr=0.001)
@@ -91,7 +99,7 @@ def train(net):
                 # print(f"{i}:{i+BATCH_SIZE}")
                 batch_X = train_X[i:i+BATCH_SIZE].view(-1, 1, DIMS, DIMS)
                 batch_y = train_y[i:i+BATCH_SIZE]
-
+                batch_X, batch_y = batch_X.to(device), batch_y.to(device)
                 acc, loss = fwd_pass(batch_X, batch_y, train=True)
 
                 if i % 50 == 0:
@@ -155,5 +163,5 @@ def fwd_pass(X, y, train=False):
 def test(size=32):
     X, y = test_X[:size], test_y[:size]
     val_acc, val_loss = fwd_pass(
-        X.view(-1, 1, DIMS, DIMS), y)
+        X.view(-1, 1, DIMS, DIMS, y).to(device), y.to(device))
     return val_acc, val_loss
